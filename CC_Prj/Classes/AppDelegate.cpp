@@ -3,10 +3,12 @@
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
-static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
-static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
+//分辨率
+static Size resSize = Size(1080, 600);
+// static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+// static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
+// static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
+// static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 AppDelegate::AppDelegate() {
 
@@ -16,45 +18,49 @@ AppDelegate::~AppDelegate()
 {
 }
 
-//if you want a different context,just modify the value of glContextAttrs
-//it will takes effect on all platforms
+//GL上下文属性
 void AppDelegate::initGLContextAttrs()
 {
-    //set OpenGL context attributions,now can only set six attributions:
-    //red,green,blue,alpha,depth,stencil
+    //red,green,blue,alpha透明度,depth深度,stencil模板
     GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8};
 
     GLView::setGLContextAttrs(glContextAttrs);
 }
 
-// If you want to use packages manager to install more packages, 
-// don't modify or remove this function
+//发包
 static int register_all_packages()
 {
-    return 0; //flag for packages manager
+    return 0;
 }
 
-bool AppDelegate::applicationDidFinishLaunching() {
+//应用程序已经完成加载
+bool AppDelegate::applicationDidFinishLaunching() 
+{
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
-    if(!glview) {
+    if(!glview) 
+	{
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect("CC_Prj", Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+		glview = GLViewImpl::createWithRect("CC_Prj", Rect(0, 0, resSize.width, resSize.height));
 #else
         glview = GLViewImpl::create("CC_Prj");
 #endif
         director->setOpenGLView(glview);
     }
 
-    // turn on display FPS
+    //设置帧率显示
     director->setDisplayStats(true);
+    //设置帧率
+    director->setAnimationInterval(1.f / 60.f);
 
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+    //设置设计分辨率
+    glview->setDesignResolutionSize(
+		resSize.width,
+		resSize.height,
+		ResolutionPolicy::NO_BORDER);
 
-    // Set the design resolution
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
+	/*
     Size frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
     if (frameSize.height > mediumResolutionSize.height)
@@ -71,19 +77,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
     {        
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
     }
+	*/
 
     register_all_packages();
 
-    // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
-
-    // run
+    Scene* scene = HelloWorld::createScene();
     director->runWithScene(scene);
+	// runWithScene 初次运行一个场景
 
     return true;
 }
 
-// This function will be called when the app is inactive. When comes a phone call,it's be invoked too
+//应用程序已经进入后台
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
@@ -91,7 +96,7 @@ void AppDelegate::applicationDidEnterBackground() {
     // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
-// this function will be called when the app is active again
+//应用程序即将进入前台
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
