@@ -1,7 +1,7 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN             // 排除游戏开发不常见的头文件
 
 // Windows Header Files:
 #include <windows.h>
